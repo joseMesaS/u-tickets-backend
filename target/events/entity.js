@@ -11,9 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const typeorm_1 = require("typeorm");
 const BaseEntity_1 = require("typeorm/repository/BaseEntity");
+const class_transformer_1 = require("class-transformer");
 const entity_1 = require("../users/entity");
 const entity_2 = require("../tickets/entity");
-const class_transformer_1 = require("class-transformer");
 let Event = class Event extends BaseEntity_1.BaseEntity {
 };
 __decorate([

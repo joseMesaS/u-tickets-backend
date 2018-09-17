@@ -1,53 +1,53 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm'
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import { Exclude } from 'class-transformer'
-import * as bcrypt from 'bcrypt'
-import Event from '../events/entity'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
+import { BaseEntity } from 'typeorm/repository/BaseEntity';
+import { Exclude } from 'class-transformer';
+import * as bcrypt from 'bcrypt';
+import Event from '../events/entity';
 import {Ticket} from '../tickets/entity';
-import Comment from '../comments/entity'
+import Comment from '../comments/entity';
 
 @Entity()
 export class User extends BaseEntity {
 
   @PrimaryGeneratedColumn()
-  id?: number
+  id?: number;
 
   @Column('text', { nullable:true })
-  name: string
+  name: string;
 
   @Column('text', { nullable:true })
-  lastName: string
+  lastName: string;
 
   @Column('text')
-  email: string
+  email: string;
 
   @Column('text', { nullable:true })
-  phoneNumber: string
+  phoneNumber: string;
 
   @Column('text', { nullable:true })
   @Exclude({toPlainOnly:true})
-  password: string
+  password: string;
 
   @Column('boolean',{default: false})
   @Exclude({ toPlainOnly: true })
-  admin: boolean
+  admin: boolean;
 
   @OneToMany(_ => Event, event => event.user)
-  events: Event[]
+  events: Event[];
 
   @OneToMany(_ => Ticket, ticket => ticket.user)
-  tickets: Ticket[]
+  tickets: Ticket[];
 
   @OneToMany(_ => Comment, comment => comment.user)
-  comments: Comment[]
+  comments: Comment[];
 
   async setPassword(rawPassword: string) {
-    const hash = await bcrypt.hash(rawPassword, 10)
-    this.password = hash
+    const hash = await bcrypt.hash(rawPassword, 10);
+    this.password = hash;
   }
 
   checkPassword(rawPassword: string): Promise<boolean> {
-    return bcrypt.compare(rawPassword, this.password)
+    return bcrypt.compare(rawPassword, this.password);
   }
 
 }
@@ -56,17 +56,16 @@ export class User extends BaseEntity {
 export  class Customer extends BaseEntity {
   
   @PrimaryGeneratedColumn()
-  id?: number
+  id?: number;
 
   @Column('text',{nullable: true})
-  userName: string
+  userName: string;
 
   @Column({default: 0})
-  ticketsOffered: number
+  ticketsOffered: number;
 
   @OneToOne(_ => User)
   @JoinColumn()
-  user: User
-
+  user: User;
 
 }

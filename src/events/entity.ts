@@ -1,36 +1,35 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm'
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import {User} from '../users/entity'
-import {Ticket} from '../tickets/entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
+import { BaseEntity } from 'typeorm/repository/BaseEntity';
 import { Exclude } from 'class-transformer';
- 
+import {User} from '../users/entity';
+import {Ticket} from '../tickets/entity';
 
 @Entity()
 export default class Event extends BaseEntity {
 
   @PrimaryGeneratedColumn()
-  id?: number
+  id?: number;
 
   @Column('text',{nullable:true})
-  name: string
+  name: string;
 
   @Column('text',{nullable:true})
-  description: string
+  description: string;
 
   @Column('text',{nullable:true})
-  thumbnail: string
+  thumbnail: string;
 
   @Column({type: 'date', nullable: true})
-  startingTime: Date
+  startingTime: Date;
 
   @Column({type: 'date', nullable: true})
-  endTime: Date
+  endTime: Date;
 
   @Exclude({toPlainOnly:true})
   @ManyToOne(_ => User, user => user.events)
-  user: User
+  user: User;
 
   @OneToMany(_=> Ticket, ticket => ticket.event )
-  tickets: Ticket[]
+  tickets: Ticket[];
 
 }

@@ -1,5 +1,5 @@
-import { JsonController, Body, Post, Get, Param } from 'routing-controllers'
-import {User, Customer} from './entity'
+import { JsonController, Body, Post, Get, Param } from 'routing-controllers';
+import {User, Customer} from './entity';
 import { IsString, IsEmail, MinLength, IsOptional, IsNumberString } from 'class-validator';
 
 class validUser {
@@ -7,54 +7,50 @@ class validUser {
   @IsOptional()
   @IsString()
   @MinLength(2)
-  name: string
+  name: string;
 
   @IsOptional()
   @IsString()
   @MinLength(2)
-  lastName: string
+  lastName: string;
 
   @IsEmail()
-  email: string
+  email: string;
 
   @IsOptional()
   @IsNumberString()
-  pnoneNumber: string
+  pnoneNumber: string;
   
   @IsString()
   @MinLength(8)
-  password: string
+  password: string;
 }
 
 @JsonController()
 export default class UserController {
-
-    @Post('/users')
-    async createUser(
-    @Body() data: validUser
-    ) {
-        const {password, ...rest} = data
-        const entity = User.create(rest)
-        await entity.setPassword(password)
-        console.log(entity)
-        const user  = await entity.save()
-
-        await Customer.create({user, userName: `${user.name} ${user.lastName}`}).save()
-
-        return user
-
-    }
-
-    @Get('/users/:id([0-9]+)')
-    getUser(
-      @Param('id') id: number
-    ) {
-      return User.findOne(id)
-    }
   
-    
-    @Get('/users')
-    allUsers() {
-      return User.find()
-    }
+  @Post('/users')
+  async createUser(
+  @Body() data: validUser
+  ) {
+      const {password, ...rest} = data;
+      const entity = User.create(rest);
+      await entity.setPassword(password);
+      const user  = await entity.save();
+
+      await Customer.create({user, userName: `${user.name} ${user.lastName}`}).save();
+      return user;
+  }
+
+  @Get('/users/:id([0-9]+)')
+  getUser(
+    @Param('id') id: number
+  ) {
+    return User.findOne(id);
+  }
+
+  @Get('/users')
+  allUsers() {
+    return User.find();
+  }
 }

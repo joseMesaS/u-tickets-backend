@@ -13,10 +13,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
+const class_validator_1 = require("class-validator");
 const entity_1 = require("../users/entity");
 const entity_2 = require("../events/entity");
 const entity_3 = require("./entity");
-const class_validator_1 = require("class-validator");
 class validTicket {
 }
 __decorate([

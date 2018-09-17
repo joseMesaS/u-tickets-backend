@@ -1,11 +1,11 @@
-import { createConnection } from 'typeorm'
-import { DefaultNamingStrategy } from 'typeorm/naming-strategy/DefaultNamingStrategy'
-import { NamingStrategyInterface } from 'typeorm/naming-strategy/NamingStrategyInterface'
-import { snakeCase } from 'typeorm/util/StringUtils'
-import {User, Customer} from './users/entity'
-import Event from './events/entity'
-import {Ticket, TicketInfo} from './tickets/entity'
-import Comment from './comments/entity'
+import { createConnection } from 'typeorm';
+import { DefaultNamingStrategy } from 'typeorm/naming-strategy/DefaultNamingStrategy';
+import { NamingStrategyInterface } from 'typeorm/naming-strategy/NamingStrategyInterface';
+import { snakeCase } from 'typeorm/util/StringUtils';
+import {User, Customer} from './users/entity';
+import Event from './events/entity';
+import {Ticket, TicketInfo} from './tickets/entity';
+import Comment from './comments/entity';
 
 class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
 
@@ -37,4 +37,4 @@ export default () =>
     logging: true,
     namingStrategy: new CustomNamingStrategy()
   })
-    .then(_ => console.log('Connected to Postgres with TypeORM'))
+    .then(_ => console.log('Connected to Postgres with TypeORM'));

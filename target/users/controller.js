@@ -57,7 +57,6 @@ let UserController = class UserController {
         const { password } = data, rest = __rest(data, ["password"]);
         const entity = entity_1.User.create(rest);
         await entity.setPassword(password);
-        console.log(entity);
         const user = await entity.save();
         await entity_1.Customer.create({ user, userName: `${user.name} ${user.lastName}` }).save();
         return user;

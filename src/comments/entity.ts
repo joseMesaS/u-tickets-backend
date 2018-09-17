@@ -1,24 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm'
-import { BaseEntity } from 'typeorm/repository/BaseEntity'
-import {User} from '../users/entity'
-import {Ticket} from '../tickets/entity'
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { BaseEntity } from 'typeorm/repository/BaseEntity';
+import {User} from '../users/entity';
+import {Ticket} from '../tickets/entity';
  
 
 @Entity()
 export default class Comment extends BaseEntity {
 
   @PrimaryGeneratedColumn()
-  id?: number
+  id?: number;
 
   @Column('text',{nullable:true})
-  message: string
+  message: string;
 
   @CreateDateColumn({type: 'timestamp'})
-  timeOfCreation: Date
+  timeOfCreation: Date;
 
   @ManyToOne(_ => User, user => user.comments)
-  user: User
+  user: User;
 
   @ManyToOne(_=> Ticket, ticket => ticket.comments, { onDelete: 'CASCADE' })
-  ticket: Ticket
+  ticket: Ticket;
 }

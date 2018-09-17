@@ -13,9 +13,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const routing_controllers_1 = require("routing-controllers");
+const class_validator_1 = require("class-validator");
 const entity_1 = require("../users/entity");
 const entity_2 = require("./entity");
-const class_validator_1 = require("class-validator");
 class validEvent {
 }
 __decorate([
@@ -47,9 +47,8 @@ __decorate([
 let EventsController = class EventsController {
     async getEvents() {
         const today = new Date().toISOString();
-        const dat = await entity_2.default.query(`select * from events where end_time >= '${today}'::date`);
-        console.log(dat);
-        return dat;
+        const upcomingEvents = await entity_2.default.query(`select * from events where end_time >= '${today}'::date`);
+        return upcomingEvents;
     }
     getEvent(id) {
         return entity_2.default.findOne(id);

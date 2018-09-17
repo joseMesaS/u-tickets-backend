@@ -1,22 +1,22 @@
-import { JsonController, Post, Get, Param, CurrentUser, Authorized, HttpCode, Body, NotFoundError, Put, Delete} from 'routing-controllers'
-import {User, Customer} from '../users/entity'
-import Event from '../events/entity'
-import {Ticket, TicketInfo} from './entity'
-import { IsString, Length, IsNumber, IsUrl, IsOptional } from 'class-validator'
+import { JsonController, Post, Get, Param, CurrentUser, Authorized, HttpCode, Body, NotFoundError, Put, Delete} from 'routing-controllers';
+import { IsString, Length, IsNumber, IsUrl, IsOptional } from 'class-validator';
+import {User, Customer} from '../users/entity';
+import Event from '../events/entity';
+import {Ticket, TicketInfo} from './entity';
 
 class validTicket {
 
     @IsString()
     @Length(10,100)
-    description: string
+    description: string;
     
     @IsOptional()
     @IsNumber()
-    price: number
+    price: number;
 
     @IsOptional()
     @IsUrl()
-    thumbnail: string
+    thumbnail: string;
     
 }
 
@@ -27,22 +27,20 @@ export default class TicketsController {
     async getTickets(
         @Param('id') eventId: number
     ) {
-       
-        const customers = await Customer.query(`SELECT * FROM customers`)
+        const customers = await Customer.query(`SELECT * FROM customers`);
 
-        const ticketsInfo = await TicketInfo.query('SELECT * FROM ticket_infos')
+        const ticketsInfo = await TicketInfo.query('SELECT * FROM ticket_infos');
 
-        const tickets =  await Ticket.query(`SELECT * FROM tickets WHERE event_id=${eventId}`)
+        const tickets =  await Ticket.query(`SELECT * FROM tickets WHERE event_id=${eventId}`);
 
-        return {tickets, customers, ticketsInfo}
+        return {tickets, customers, ticketsInfo};
     }
 
     @Get('/tickets/:id([0-9]+)')
     async getTicket(
       @Param('id') id: number
     ) {
-
-        return await Ticket.query(`SELECT * FROM tickets WHERE id=${id}`)
+        return await Ticket.query(`SELECT * FROM tickets WHERE id=${id}`);
     }
    
     @Authorized()
@@ -53,29 +51,28 @@ export default class TicketsController {
         @Body() ticket : validTicket,
         @CurrentUser() user: User
     ) {
-        const event = await Event.findOne(eventId)
-        if(!event) throw new NotFoundError('Event not Found!')
+        const event = await Event.findOne(eventId);
+        if(!event) throw new NotFoundError('Event not Found!');
       
-        const entity = await Ticket.create(ticket)
-        entity.user = user
-        entity.event = event
-        const newTicket = await entity.save()
+        const entity = await Ticket.create(ticket);
+        entity.user = user;
+        entity.event = event;
+        const newTicket = await entity.save();
 
-
-        await TicketInfo.create({ticket: newTicket}).save()
+        await TicketInfo.create({ticket: newTicket}).save();
         
-        const customer = await Customer.findOne({user: user})
-        if(!customer) throw new NotFoundError('Not a user')
-        customer.ticketsOffered = customer.ticketsOffered + 1
-        await customer.save()
+        const customer = await Customer.findOne({user: user});
+        if(!customer) throw new NotFoundError('Not a user');
+        customer.ticketsOffered = customer.ticketsOffered + 1;
+        await customer.save();
 
-        const ticketsInfo = await TicketInfo.query('SELECT * FROM ticket_infos')
+        const ticketsInfo = await TicketInfo.query('SELECT * FROM ticket_infos');
         
-        const [ticketPayload] = await Ticket.query(`SELECT * FROM tickets WHERE id=${newTicket.id}`)
+        const [ticketPayload] = await Ticket.query(`SELECT * FROM tickets WHERE id=${newTicket.id}`);
 
-        const custommerPayload = await Customer.query(`SELECT * FROM customers`)
+        const custommerPayload = await Customer.query(`SELECT * FROM customers`);
 
-        return {ticketPayload, custommerPayload, ticketsInfo}
+        return {ticketPayload, custommerPayload, ticketsInfo};
     }
 
     @Authorized(['Author'])
@@ -85,15 +82,14 @@ export default class TicketsController {
         @Param('id') id: number,
         @Body() update : Partial<Ticket>
     ) {
-
-        const ticket = await Ticket.findOne(id)
-        if(!ticket) throw new NotFoundError('Ticket not found!')
+        const ticket = await Ticket.findOne(id);
+        if(!ticket) throw new NotFoundError('Ticket not found!');
         
-        const updatedTicket = await Ticket.merge(ticket,update).save()
+        const updatedTicket = await Ticket.merge(ticket,update).save();
 
-        const [payload] = await Ticket.query(`SELECT * FROM tickets WHERE id=${updatedTicket.id}`)
+        const [payload] = await Ticket.query(`SELECT * FROM tickets WHERE id=${updatedTicket.id}`);
 
-        return payload
+        return payload;
     }
 
     @Authorized(['Author'])
@@ -103,22 +99,18 @@ export default class TicketsController {
         @Param('id') id: number,
         @CurrentUser() user: User
     ) {
+        const ticket = await Ticket.findOne(id);
+        if(!ticket) throw new NotFoundError('Ticket not found!');
 
-        const ticket = await Ticket.findOne(id)
-        if(!ticket) throw new NotFoundError('Ticket not found!')
+        const customer = await Customer.findOne({user: user});
+        if(!customer) throw new NotFoundError('Not a user');
+        customer.ticketsOffered = customer.ticketsOffered - 1;
+        await customer.save();
 
-        const customer = await Customer.findOne({user: user})
-        if(!customer) throw new NotFoundError('Not a user')
-        customer.ticketsOffered = customer.ticketsOffered - 1
-        await customer.save()
-
-        const custommerPayload = await Customer.query(`SELECT * FROM customers`)
+        const custommerPayload = await Customer.query(`SELECT * FROM customers`);
         
-        await Ticket.remove(ticket)
+        await Ticket.remove(ticket);
 
-        return custommerPayload
-
+        return custommerPayload;
     }
-
-    
 }
